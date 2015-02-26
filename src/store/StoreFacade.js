@@ -5,6 +5,7 @@ var Event = require('../event/Event.js');
 var EventHandler = require('../event/EventHandler.js');
 var StoreConstants = require('./StoreConstants.js');
 
+var uniqueID = require('../uniqueid/uniqueID.js');
 var invariant = require('../invariant.js');
 
 var HINT_LINK = 'Learn more about using the Store API:' +
@@ -21,6 +22,7 @@ class StoreFacade {
   _getter: (...args: Array<any>) => any;
   _event: Event;
   _responses: {[key:string]: (data: any, actionType: string) => any};
+  _uid: number;
 
   constructor(
     getter: (...args: Array<any>) => any,
@@ -31,6 +33,7 @@ class StoreFacade {
     this._getter = getter;
     this._responses = responses;
     this._event = new Event();
+    this._uid = uniqueID();
 
     this._dispatchToken = this._dispatcher.register(
       this._handleDispatch.bind(this)
@@ -80,6 +83,10 @@ class StoreFacade {
    */
   getDispatchToken(): number {
     return this._dispatchToken;
+  }
+
+  getID(): number {
+    return this._uid;
   }
 
   /**
